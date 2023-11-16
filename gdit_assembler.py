@@ -1,4 +1,4 @@
-def assemble(assembly_code):
+def gdit_assembler(assembly_code):
     # Split the code into lines
     lines = assembly_code.strip().split("\n")
     
@@ -6,6 +6,11 @@ def assemble(assembly_code):
     labels = {}
     address = 0
     for line in lines:
+        # Remove comments
+        line = line.split(';')[0].strip()
+        if not line:
+            continue  # Skip empty lines
+
         if line.endswith(":"):  # It's a label
             label = line[:-1]
             labels[label] = address
@@ -21,10 +26,19 @@ def assemble(assembly_code):
     machine_code = []
     address = 0
     for line in lines:
+        # Remove comments
+        comment = None
+        if ';' in line:
+            line, comment = line.split(';', 1)
+            line = line.strip()
+
         if line.endswith(":"):  # Skip labels in the second pass
             continue
-        
+
         parts = line.split()
+        if not parts:
+            continue  # Skip empty lines
+
         instruction = parts[0]
         
         # Check if it's an instruction or data
@@ -44,7 +58,10 @@ def assemble(assembly_code):
                 "HLT": "00"
             }.get(instruction, None)
             
-            machine_code.append(f"{format(address, '02X')}: {opcode} ; {line}")
+            machine_code_line = f"{format(address, '02X')}: {opcode}"
+            if comment:
+                machine_code_line += f" ; {comment.strip()}"
+            machine_code.append(machine_code_line)
             address += 1
             
             # Append operand if present
