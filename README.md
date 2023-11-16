@@ -66,30 +66,38 @@ In this representation, the first column gives the memory location and the secon
 ## This Project
 This project implements a simple two-pass assembler written in python for the above given Instruction Set.
 
-### First Pass: Label Resolution
-- **Purpose**: The first pass is primarily for handling labels. Labels are symbolic names for memory addresses and are used in branching and data storage.
-- **Process**:
-  1. **Splitting the Code**: The assembly code is split into individual lines.
-  2. **Label Collection**: As the assembler goes through each line, it checks for labels (lines ending with `:`). When a label is found, it's stored in a dictionary (`labels`) with its corresponding memory address.
-  3. **Address Calculation**: The memory address for each label is calculated based on the size of the instructions and data encountered so far. This is crucial for correctly resolving the addresses in the second pass.
+- **Purpose**: Converts assembly code into machine code, also handling comments within the assembly code.
+- **Input**: A string containing the assembly code, which may include comments marked by semicolons (`;`).
 
-### Second Pass: Code Generation
-- **Purpose**: The second pass generates the actual machine code by translating each assembly instruction into its binary or hexadecimal equivalent.
-- **Process**:
-  1. **Iterating Over Lines**: The assembler again iterates over each line of the assembly code.
-  2. **Skipping Labels**: Labels are skipped in this pass as their addresses have already been resolved.
-  3. **Instruction Translation**:
-     - Each line is split into parts (operation and operand).
-     - The assembler translates each operation into its corresponding opcode.
-     - For operations that require an operand, the assembler checks if the operand is a label or a numeric value. If it's a label, its address (resolved in the first pass) is used; otherwise, the numeric value is used.
-  4. **Machine Code Generation**: For each instruction, the corresponding machine code (opcode and operand) is generated and stored.
-  5. **Data Handling**: If a line contains data (not an instruction), the assembler treats it accordingly, storing the data value at the correct memory address.
+#### First Pass: Label and Address Resolution with Comment Handling
+- **Splitting the Code**: The assembly code is split into individual lines.
+- **Comment Removal and Label Collection**:
+  - Each line is processed to remove comments. This is done by splitting the line at the first semicolon (`;`) and keeping only the part before it.
+  - If a line is empty or becomes empty after removing comments, it's skipped.
+  - If a line ends with `:`, it's identified as a label. The label's name and its corresponding address are stored in the `labels` dictionary.
+- **Address Calculation**:
+  - The address counter (`address`) is incremented based on the size of the instructions and data, excluding comments.
 
-### Output
-- The final output is a sequence of machine code instructions, each associated with a memory address. This output can be loaded into memory for execution by a machine (or emulator) that understands the defined instruction set.
+#### Second Pass: Machine Code Generation with Comment Preservation
+- **Iterating Over Lines with Comment Handling**: The assembler again goes through each line, removing comments and skipping empty lines.
+- **Skipping Labels**: Labels are skipped as their addresses are already resolved.
+- **Instruction Handling**:
+  - Each line is split into parts (operation and operand), excluding the comment part.
+  - The assembler checks if the line is an instruction or data.
+  - For instructions, the corresponding opcode is appended to the machine code. If the original line had a comment, it's preserved alongside the machine code.
+  - The address is incremented after appending the opcode.
+- **Operand Handling**:
+  - If the instruction requires an operand, the assembler checks if it's a label or an integer.
+  - If it's a label, its resolved address is used; otherwise, the integer value is used.
+  - The operand is formatted and appended to the machine code, and the address is incremented.
+- **Data Handling**:
+  - For data storage lines, the data value is formatted and appended to the machine code.
+  - The address is incremented after appending the data.
 
-### Key Points
-- **Two-Pass Nature**: This approach ensures that all labels are correctly resolved before the actual machine code generation, allowing for forward and backward jumps and data references.
-- **Flexibility**: The assembler can handle various instructions and is adaptable to different assembly language syntaxes, as long as the instruction set is predefined.
-- **Error Handling**: While not explicitly detailed in our discussion, a robust assembler would also include error handling to manage undefined labels, syntax errors, and other anomalies in the assembly code.
-- 
+#### Output
+- The function returns the generated machine code as a string. Each line of the output represents a byte of machine code with its corresponding address. Comments from the assembly code are preserved in the output where applicable.
+
+#### Key Features
+- **Comment Handling**: The assembler strips comments from the code during processing, ensuring they don't interfere with the assembly process. Comments are preserved in the output for readability and reference.
+- **Two-Pass Approach**: Ensures accurate address resolution for labels before generating machine code.
+- **Flexibility and Robustness**: Handles various instructions, data storage formats, and comments, making it versatile and user-friendly.
