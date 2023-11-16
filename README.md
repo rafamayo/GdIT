@@ -20,12 +20,12 @@ The CPU supports the following Instruction Set:
 
 **Notes**
 + Every Opcode is 1 byte long
-+ Some instructions requiere an argument and are 2 bytes long (1 byte Opcode + 1 byte argument)
-+ Some instructions don't requiere an argument and are 1 byte long (1 byte opcode)
-+ ADD, SUB, STA, LDA requiere a byte as argument which represents a memory address
-+ LDI requires a byte as argument which represents an immediate value (a number)
-+ BRA, BRP, BRZ requiere a text label as argument which represents a location in the code
-+ HLT, INP, OUT require no arguments 
++ Some instructions requiere an operand and are 2 bytes long (1 byte opcode + 1 byte operand)
++ Some instructions don't requiere an operand and are 1 byte long (1 byte opcode)
++ ADD, SUB, STA, LDA requiere a byte as operand which represents a memory address
++ LDI requires a byte as operand which represents an immediate value (a number)
++ BRA, BRP, BRZ requiere a text label as operand which represents a location in the code
++ HLT, INP, OUT require no operands 
 
 With this assembler language you can write simple programms such as the following:
 
@@ -64,4 +64,32 @@ Taking into account the definition of the instruction set and the lengths of the
 In this representation, the first column gives the memory location and the second column is the content. The content of a memory location will be either an opcode, an argument or data.
 
 ## This Project
-This project implements a simple two-pass assembler written in python for the above given Instruction Set. 
+This project implements a simple two-pass assembler written in python for the above given Instruction Set.
+
+### First Pass: Label Resolution
+- **Purpose**: The first pass is primarily for handling labels. Labels are symbolic names for memory addresses and are used in branching and data storage.
+- **Process**:
+  1. **Splitting the Code**: The assembly code is split into individual lines.
+  2. **Label Collection**: As the assembler goes through each line, it checks for labels (lines ending with `:`). When a label is found, it's stored in a dictionary (`labels`) with its corresponding memory address.
+  3. **Address Calculation**: The memory address for each label is calculated based on the size of the instructions and data encountered so far. This is crucial for correctly resolving the addresses in the second pass.
+
+### Second Pass: Code Generation
+- **Purpose**: The second pass generates the actual machine code by translating each assembly instruction into its binary or hexadecimal equivalent.
+- **Process**:
+  1. **Iterating Over Lines**: The assembler again iterates over each line of the assembly code.
+  2. **Skipping Labels**: Labels are skipped in this pass as their addresses have already been resolved.
+  3. **Instruction Translation**:
+     - Each line is split into parts (operation and operand).
+     - The assembler translates each operation into its corresponding opcode.
+     - For operations that require an operand, the assembler checks if the operand is a label or a numeric value. If it's a label, its address (resolved in the first pass) is used; otherwise, the numeric value is used.
+  4. **Machine Code Generation**: For each instruction, the corresponding machine code (opcode and operand) is generated and stored.
+  5. **Data Handling**: If a line contains data (not an instruction), the assembler treats it accordingly, storing the data value at the correct memory address.
+
+### Output
+- The final output is a sequence of machine code instructions, each associated with a memory address. This output can be loaded into memory for execution by a machine (or emulator) that understands the defined instruction set.
+
+### Key Points
+- **Two-Pass Nature**: This approach ensures that all labels are correctly resolved before the actual machine code generation, allowing for forward and backward jumps and data references.
+- **Flexibility**: The assembler can handle various instructions and is adaptable to different assembly language syntaxes, as long as the instruction set is predefined.
+- **Error Handling**: While not explicitly detailed in our discussion, a robust assembler would also include error handling to manage undefined labels, syntax errors, and other anomalies in the assembly code.
+- 
