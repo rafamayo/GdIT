@@ -1,4 +1,4 @@
-def gdit_assembler(assembly_code):
+def simple_assembler(assembly_code):
     # Split the code into lines
     lines = assembly_code.strip().split("\n")
     
