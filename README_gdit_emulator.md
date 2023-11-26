@@ -3,6 +3,8 @@
 ## Overview
 The Simple Computer Emulator is a Python-based tool designed to emulate a basic computer system. It interprets and executes machine code written for a predefined instruction set. This emulator supports both normal and step-by-step execution modes, allowing users to inspect the execution process in detail.
 
+This simple computer model is used as part of the course "Fundamentals of information technology" at the Kempten University of Applied Sciences (https://www.hs-kempten.de/).
+
 ## Features
 - **256 Memory Locations**: The emulator has 256 memory locations, each capable of storing a byte.
 - **Step-by-Step Execution**: Users can choose to execute programs step-by-step, inspecting the state of the emulator at each step.
