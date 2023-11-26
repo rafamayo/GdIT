@@ -1,4 +1,4 @@
-class gdit_emulator:
+class SimpleComputerEmulator:
     def __init__(self):
         self.memory = [0] * 256  # Assuming 256 memory locations
         self.accumulator = 0
