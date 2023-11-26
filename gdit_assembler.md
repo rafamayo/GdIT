@@ -1,3 +1,5 @@
+## Introduction
+
 The CPU supports the following Instruction Set:
 
 | Opcode (HEX)      | Assembler | Explanation |
