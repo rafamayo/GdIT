@@ -1,6 +1,10 @@
-## Introduction
+## Simple Computer Assembler User Manual
 
-The CPU supports the following Instruction Set:
+This is a simple two-pass assembler written in python for the Instruction Set specified below.
+
+The simple computer model and its assembler are used as part of the course "Fundamentals of information technology" at the Kempten University of Applied Sciences (https://www.hs-kempten.de/).
+
+### The Instruction Set:
 
 | Opcode (HEX)      | Assembler | Explanation |
 | :----------------: | :------ | :---- |
@@ -61,11 +65,10 @@ Taking into account the definition of the instruction set and the lengths of the
 ```
 In this representation, the first column gives the memory location and the second column is the content. The content of a memory location will be either an opcode, an argument or data.
 
-## This Project
-This project implements a simple two-pass assembler written in python for the above given Instruction Set.
+## Features
 
-- **Purpose**: Converts assembly code into machine code, also handling comments within the assembly code.
-- **Input**: A string containing the assembly code, which may include comments marked by semicolons (`;`).
+- Converts assembly code into machine code, also handling comments within the assembly code.
+- Takes as input a string containing the assembly code, which may include comments marked by semicolons (`;`).
 
 #### First Pass: Label and Address Resolution with Comment Handling
 - **Splitting the Code**: The assembly code is split into individual lines.
